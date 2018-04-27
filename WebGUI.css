@@ -1,0 +1,36 @@
+body {
+	font: Arial;
+}
+
+/
+
+#customRunPanelTable {
+        font-family: Arial; 
+        font-size: 14px; 
+        color: black; 
+ 	background-color: #337ab7
+		
+
+}
+#customRunPanelTable td  {
+    border: 1px solid #ddd;
+    padding: 8px;
+} 
+
+#customRunPanelTable tr:nth-child(even){background-color: #f2f2f2;}
+
+#customRunPanelTable tr:hover {background-color: #97d6ff;}
+
+#customRunPanelTable th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #2e6da4; /* navy blue*/
+    color: white;
+
+}
+
+#customRunPanelTable  input, select, textarea, option {
+
+    color: black;
+}

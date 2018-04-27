@@ -1,0 +1,255 @@
+
+
+<section>
+	<!-- SIDEBAR -->
+	
+		<div class="col-md-2 content-block">
+
+			<!-- Run test cases by selecting a label, form sends label to method in RunPanelController -->
+			<form id="myForm" action="runpanel/showTestCasesByLabel">
+
+				<div class="row" >
+				<h4>Run TestCases By Label</h4>
+				<div class="alert alert-info">
+				<p>
+				
+					<strong>TIME: {{theTime}} </strong>
+				</p>
+				</div>				
+
+					<button id='runButton' class="btn btn-primary" name="subject"
+						type="submit" value="run" data-toggle="modal"
+						data-target="#testRun" ng-click="runStat()" title="Run testcases for selected label">Run</button>
+
+					<button type="button" class="btn btn-primary" data-placement="top"
+						title="Stop Running TestCases" value="stop"
+						ng-click="stopTestcase()">Stop</button>
+
+					<button type="button" class="btn btn-primary" data-toggle="modal"
+						data-target="#myModal" title="Shows last testcase run results">Results</button>
+
+				
+				<p></p>
+					<select multiple id='optionDisplayLabel' name='labelOption' ng-model="selectedLabel" size="25" required>
+						<option ng-repeat="x in labels" ng-selected="$first" >{{ x }}</option>
+					</select>
+					
+				</div>
+			</form>
+			
+		</div>
+		
+		<div class="col-md-1"></div>
+		<!-- Main Content -->
+		<div class="col-md-9  content-block">
+			
+
+				<h2 data-toggle="tooltip"
+					title="Double click on a row to open testcase">
+					Run Panel
+				
+				</h2>
+
+				<div class="table-responsive">
+					<table datatable="" dt-options="dtOptions"
+						dt-columns="dtColumns" id="customRunPanelTable"></table>
+
+				</div>
+
+				<!--Required button for modal call from javascript -->
+				<div class="invisible">
+					<a class="btn btn-default" data-toggle="modal"
+						data-target="#addModal"> test modal</a>
+				</div>
+
+
+
+				<!-- Modal Open Testcase in Edit Panel-->
+				<div class="modal fade" id="addModal" tabindex="-1" role="dialog"
+					aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div class="modal-dialog modal-sm">
+						<div class="modal-content">
+							<div class="modal-body">
+
+								<form id="FormID" action="editPanel/selectedTestCaseID">
+
+									<div class="alert alert-info">
+										<p>
+											You clicked on Testcase ID: <strong><input
+												name="selectedTestcase" type="text"
+												ng-model="iDmessage" readonly="readonly"/></strong>
+											<!-- //showCase. -->
+										</p>
+									</div>
+									<p>Click OK to open up test case information</p>
+									<div id='buttons'>
+										<button id='labelButton' name="subject"
+											class="btn btn-primary" type="submit" value="label">OK</button>
+										&nbsp;
+										<button type="button" class="btn btn-primary"
+											data-dismiss="modal">Close</button>
+									</div>
+								</form>
+
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<!-- Modal Results Table-->
+				<div class="modal fade" id="myModal" role="dialog">
+					<div class="modal-dialog modal-lg">
+
+						<!-- Modal content-->
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">x</button>
+								<h4 class="modal-title">
+									Test Case Results for Label: <strong>{{ labelName}} </strong>
+								</h4>
+								<!-- 	<div class="alert-info"><h1>{{stopMessage}}</h1></div> -->
+							</div>
+							<div class="modal-body">
+
+								<div class="alert alert-success">
+									<strong>Passed test cases: {{passedNum}}</strong>
+								</div>
+								<div class="table-responsive">
+									<table datatable="ng" class=" table-bordered" id="customRunPanelTable">
+										<thead>
+											<tr>
+												<th>TestID</th>
+												<th>Name</th>
+												<th>Description</th>
+												<th>Category</th>
+												<th>Release Num</th>
+											</tr>
+											<!-- input filter -->
+
+										</thead>
+
+										<tbody>
+											<tr ng-repeat="x in passedList">
+												<td>{{x.testID}}</td>
+												<td>{{x.name}}</td>
+												<td>{{x.description}}</td>
+												<td>{{x.category}}</td>
+												<td>{{x.releaseNum}}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<p></p>
+							</div>
+							<div class="modal-body">
+								<div class="alert alert-danger">
+									<strong>Failed test cases: {{failedNum}}</strong>
+								</div>
+								<div class="table-responsive">
+									<table datatable="ng" class=" table-bordered" id="customRunPanelTable">
+										<thead>
+											<tr>
+												<th>TestID</th>
+												<th>Name</th>
+												<th>Description</th>
+												<th>Category</th>
+												<th>Release Num</th>
+
+
+
+											</tr>
+										</thead>
+										<tbody>
+											<tr ng-repeat="x in failedList">
+												<td>{{x.testID}}</td>
+												<td>{{x.name}}</td>
+												<td>{{x.description}}</td>
+												<td>{{x.category}}</td>
+												<td>{{x.releaseNum}}</td>
+
+
+
+											</tr>
+
+										</tbody>
+									</table>
+								</div>
+								<!-- Now displayed in ResultsPanel page--- <strong>Failure Reasons:</strong>
+								<ul>
+									<li ng-repeat="y in failedReasonList track by $index">{{ y
+										}}</li>
+								</ul> -->
+
+							</div>
+							<div class="modal-footer">
+								<button ng-click="batchEmail()" class="btn btn-primary"
+									id="emailButton" ng-show="passedNum > 0 || failedNum > 0">Send
+									All Results</button>
+
+								<a class="downloadButtonStyle" type="button" value="Download All Results"
+									href="http://localhost:8080/runpanel/downloadTestDataBatch"
+									download="testResults.csv">Download All Results</a>
+								<button type="button" class="btn btn-primary"
+									data-dismiss="modal">Close</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Running Testcases Modal -->
+				<div class="modal fade" id="testRun" role="dialog" data-backdrop="static" data-keyboard="false">
+					<!-- data-backdrop="static" data-keyboard="false" -->
+					<div class="modal-dialog ">
+
+						<!-- Modal content-->
+						<div class="modal-content">
+					<div class="modal-header">
+						<h2 class="modal-title">Test Cases Running for Selected Label:</h2>
+						<h3>{{selectedLabel}}</h3><p></p>
+						<h4>
+						Details:<strong> {{ labelName}} </strong></h4>
+					</div>
+					<div class="modal-body">
+						<div class="progress">
+					<div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0"
+								aria-valuemax="100" style="width: 100%"></div>
+						</div>
+						
+						<div class="alert alert-info">
+							<strong> This alert box will close when all testcases
+								have finished running.</strong>
+						</div>
+						<div class="row">
+						<div class="col-xs-6">
+						<div class="alert alert-success text-white">
+							<strong>Passed test cases:</strong> {{passedNum}}
+						</div>
+
+						</div>
+						<div class="col-xs-6">
+						<div class="alert alert-danger text-white">
+							<strong>Failed test cases: </strong>{{failedNum}}
+						</div>			
+						</div>
+						</div>
+						<p></p>
+					</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-primary"
+									data-dismiss="modal" data-toggle="tooltip" data-placement="top"
+									title="Stop Running TestCases" value="stop"
+									ng-click="stopTestcase()">Stop</button>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			
+
+		</div>
+
+</section>
+
+
+
